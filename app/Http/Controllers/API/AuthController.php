@@ -46,7 +46,7 @@ class AuthController extends Controller
         $data = [
             'grant_type' => 'password',
             'client_id' => '2',
-            'client_secret' => 'rDfbdml4JJgsBWf7oxEmith9CnnC67Cao6AuPwGb',
+            'client_secret' => env('OAUTH_PERSONAL_KEY'),
             'username' => request('username'),
             'password' => request('password'),
         ];
