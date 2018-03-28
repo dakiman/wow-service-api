@@ -7,49 +7,72 @@ use App\Http\Controllers\Controller;
 use App\User;
 use DB;
 use Hash;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    public function register()
+    public function register(Request $request)
     {
-        User::create([
-            'name' => request('name'),
-            'email' => request('email'),
-            'password' => bcrypt(request('password'))
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string|email|max:50|unique:users',
+            'name' => 'required|string|max:30|min:2',
+            'password' => 'required|string|min:8'
         ]);
 
-        return response()->json(['status' => 201]);
+        if($validator->fails()){
+            return response()->json(['errors'=>$validator->getMessageBag(),'status' => 400]);
+        } else {
+            User::create([
+                'name' => request('name'),
+                'email' => request('email'),
+                'password' => bcrypt(request('password'))
+            ]);
+            return response()->json(['status' => 201]);
+        }
     }
 
     public function login()
     {
-         // Check if a user with the specified email exists
-        $user = User::whereEmail(request('username'))->first();
-
-        if (!$user) {
+        $result = auth()->attempt(request(['email', 'password']));
+        if(!$result)
+        {
             return response()->json([
-                'message' => 'Wrong email or password',
-                'status' => 422
+                'errors' => [
+                    'auth'=> [
+                        'Wrong email or password.'
+                    ]
+                ],
             ], 422);
         }
 
-        // If a user with the email was found - check if the specified password
-        // belongs to this user
-        if (!Hash::check(request('password'), $user->password)) {
-            return response()->json([
-                'message' => 'Wrong email or password',
-                'status' => 422
-            ], 422);
-        }
-
+        $user = User::whereEmail(request('email'))->first();
+        
         // Send an internal API request to get an access token
         $data = [
             'grant_type' => 'password',
             'client_id' => '2',
             'client_secret' => env('OAUTH_PERSONAL_KEY'),
-            'username' => request('username'),
+            'username' => request('email'),
             'password' => request('password'),
         ];
+
+        /*
+            -------------------------------
+            CHECK CODE BLOCK FOR USEFULLNESS
+        */
+
+        // $accessToken = $user->token();
+
+        // if($accessToken != null) {
+        //     $refreshToken = DB::table('oauth_refresh_tokens')
+        //     ->where('access_token_id', $accessToken->id)
+        //     ->delete();
+        //     $accessToken->delete();
+        // }
+
+        /*
+            -------------------------------
+        */
 
         $request = Request::create('/oauth/token', 'POST', $data);
 
@@ -58,20 +81,17 @@ class AuthController extends Controller
         // Check if the request was successful
         if ($response->getStatusCode() != 200) {
             return response()->json([
-                'message' => 'Wrong email or password',
-                'status' => 422
+                'message' => 'Request cannot be handled',
+                'status' => $response->getStatusCode()    
             ], 422);
         }
 
-        // Get the data from the response
         $data = json_decode($response->getContent());
 
-        // Format the final response in a desirable format
         return response()->json([
             'token' => $data->access_token,
             'user' => $user,
-            'status' => 200
-        ]);
+        ], 200);
     }
 
     public function logout()
