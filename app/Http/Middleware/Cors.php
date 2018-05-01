@@ -15,11 +15,11 @@ class Cors
      */
     public function handle($request, Closure $next)
     {
-        $domains = ['http://localhost:8080', 'http://www.domain.com'];
+        $domains = ['http://localhost:8080', 'http://www.domain.com', 'http://localhost:8081'];
 
-        if(isset($request->server()['HTTP_ORIGIN'])){
+        if (isset($request->server()['HTTP_ORIGIN'])) {
             $origin = $request->server()['HTTP_ORIGIN'];
-            if(in_array($origin, $domains)) {
+            if (in_array($origin, $domains)) {
                 header('Access-Control-Allow-Origin: ' . $origin);
                 header('Access-Control-Allow-Headers: Origin, Content-Type, Authorization');
             }
