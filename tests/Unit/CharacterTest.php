@@ -95,7 +95,7 @@ class CharacterTest extends TestCase
         ]);
         $response = $this->actingAs($user, 'api')->json('DELETE', '/api/character/' . $character->id);
         $response
-            ->assertStatus(404)
+            ->assertStatus(403)
             ->assertJsonValidationErrors('character');
     }
 

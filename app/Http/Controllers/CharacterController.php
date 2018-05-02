@@ -46,7 +46,7 @@ class CharacterController extends Controller
                 $character->delete();
                 return response(['success' => 'Character sucessfully deleted.'], 200);
             } else {
-                return response(['errors' => ['character' => ['You do not own this character.']]], 404);
+                return response(['errors' => ['character' => ['You do not own this character.']]], 403);
             }
         } catch (\Throwable $e) {
             return response(['errors' => ['character' => ['Character not found.']]], 404);
