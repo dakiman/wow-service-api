@@ -12,4 +12,7 @@ Route::post('/login', 'API\AuthController@login');
 Route::middleware('auth:api')->group(function () {
     Route::post('/logout', 'API\AuthController@logout');
     Route::get('/user', 'API\AuthController@getUser');
+    Route::post('/character', 'CharacterController@store');
+    Route::get('/character', 'CharacterController@get');
+    Route::delete('/character/{id}', 'CharacterController@delete');
 });

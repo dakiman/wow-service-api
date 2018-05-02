@@ -37,9 +37,9 @@ class AuthController extends Controller
         if (!$result) {
             return response()->json([
                 'errors' => [
-                'auth' => [
-                    'Wrong email or password.'
-                ]
+					'auth' => [
+						'Wrong email or password.'
+					]
                 ],
             ], 422);
         }
