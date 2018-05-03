@@ -14,17 +14,15 @@ class UserTest extends TestCase
 
     public function testUserShouldRegister()
     {
-        $faker = \Faker\Factory::create();
         $user = $this->getUser();
         $response = $this->json('POST', '/api/register', $user);
         unset($user['password']);
         $response
             ->assertStatus(201)
-            //assert that the response contains in itself the given json structure
             ->assertJson(['user' => $user]);
     }
 
-    public function testLoginShouldReturnToken()
+    public function testLoginShouldReturnUser()
     {
         //create the password first so we can send it as plaintext in the request
         $password = str_random(10);
@@ -58,17 +56,6 @@ class UserTest extends TestCase
             ->assertJsonFragment(["The email must be a valid email address."]);
     }
 
-    // public function testRegistrationEmailCantBeEmpty()
-    // {
-    //     $user = $this->getUser();
-    //     unset($user['email']);
-    //     $response = $this->json('POST', '/api/register', $user);
-    //     $response
-    //         ->assertStatus(400)
-    //         ->assertJsonValidationErrors('email')
-    //         ->assertJsonFragment(['The email field is required.']);
-    // }
-
     public function testRegistrationPasswordRequired()
     {
         $this->validationRequired('password');
@@ -83,17 +70,6 @@ class UserTest extends TestCase
     {
         $this->validationRequired('email');
     }
-
-    // public function testNameMaxLength()
-    // {
-    // 	$user = $this->getUser();
-    // 	$user['name'] = str_random(31);
-    // 	$response = $this->json('POST', '/api/register', $user);
-    //     $response
-    //         ->assertStatus(400)
-    //         ->assertJsonValidationErrors('name')
-    //         ->assertJsonFragment(["The name may not be greater than 30 characters."]);
-    // }
 
     public function testNameMaxLength()
     {

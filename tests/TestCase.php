@@ -26,35 +26,37 @@ abstract class TestCase extends BaseTestCase
         ];
     }
 
-    public function validationRequired($type = null)
+    public function validationRequired($type, $route = '/api/register', $data = false)
     {
+        $data = $data ? $data : $this->getUser();
         $user = $this->getUser();
         unset($user[$type]);
-        $response = $this->json('POST', '/api/register', $user);
-        $response
-                ->assertStatus(400)
-                ->assertJsonValidationErrors($type)
-                ->assertJsonFragment(['The ' . $type . ' field is required.']);
-	}
-
-	public function validationMaxLength($type = null, $limit = null) {
-		$user = $this->getUser();
-		$user[$type] = str_random($limit + 1);
-		$response = $this->json('POST', '/api/register', $user);
+        $response = $this->json('POST', $route, $user);
         $response
             ->assertStatus(400)
             ->assertJsonValidationErrors($type)
-            ->assertJsonFragment(['The ' . $type . ' may not be greater than 30 characters.']);
-	}
+            ->assertJsonFragment(['The ' . $type . ' field is required.']);
+    }
 
-	public function validationMinLength($type = null, $limit = null)
-	{
-		$user = $this->getUser();
-		$user[$type] = str_random($limit - 1);
-		$response = $this->json('POST', '/api/register', $user);
+    public function validationMaxLength($type, $limit, $route = '/api/register', $data = false)
+    {
+        $data = $data ? $data : $this->getUser();
+        $user[$type] = str_random($limit + 1);
+        $response = $this->json('POST', $route, $user);
+        $response
+            ->assertStatus(400)
+            ->assertJsonValidationErrors($type)
+            ->assertJsonFragment(['The ' . $type . ' may not be greater than ' . $limit . ' characters.']);
+    }
+
+    public function validationMinLength($type, $limit, $route = '/api/register', $data = false)
+    {
+        $data = $data ? $data : $this->getUser();
+        $user[$type] = str_random($limit - 1);
+        $response = $this->json('POST', $route, $user);
         $response
             ->assertStatus(400)
             ->assertJsonValidationErrors($type)
             ->assertJsonFragment(['The ' . $type . ' must be at least ' . $limit . ' characters.']);
-	}
+    }
 }

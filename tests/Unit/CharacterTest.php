@@ -13,13 +13,18 @@ class CharacterTest extends TestCase
 {
     use DatabaseTransactions;
 
+    private function getCharacter($name = 'Sernaos', $realm = 'The Maelstrom')
+    {
+        return [
+            'name' => $name,
+            'realm' => $realm
+        ];
+    }
+
     public function testUserCanAddCharacter()
     {
         $user = factory(User::class)->create();
-        $character = [
-            'name' => 'Sernaos',
-            'realm' => 'The Maelstrom'
-        ];
+        $character = $this->getCharacter();
         $response = $this->actingAs($user, 'api')->json('POST', '/api/character', $character);
         $response
             ->assertStatus(200)
@@ -29,10 +34,7 @@ class CharacterTest extends TestCase
     public function testUserCantAddInvalidCharacter()
     {
         $user = factory(User::class)->create();
-        $character = [
-            'name' => 'Sernaos123',
-            'realm' => 'The Maelstrom'
-        ];
+        $character = $this->getCharacter(str_random(10) . '123');
         $response = $this->actingAs($user, 'api')->json('POST', '/api/character', $character);
         $response
             ->assertStatus(404)
@@ -42,9 +44,7 @@ class CharacterTest extends TestCase
     public function testCharacterNameRequired()
     {
         $user = factory(User::class)->create();
-        $character = [
-            'realm' => 'The Maelstrom'
-        ];
+        $character = $this->getCharacter($name = '');
         $response = $this->actingAs($user, 'api')->json('POST', '/api/character', $character);
         $response
             ->assertStatus(422)
@@ -54,9 +54,7 @@ class CharacterTest extends TestCase
     public function testCharacterRealmRequired()
     {
         $user = factory(User::class)->create();
-        $character = [
-            'name' => 'Sernaos'
-        ];
+        $character = $this->getCharacter('Sernaos', '');
         $response = $this->actingAs($user, 'api')->json('POST', '/api/character', $character);
         $response
             ->assertStatus(422)
