@@ -6,11 +6,12 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\EasyValidate;
 use App\User;
 
 class UserTest extends TestCase
 {
-    use DatabaseTransactions;
+    use DatabaseTransactions, EasyValidate;
 
     public function testUserShouldRegister()
     {
