@@ -15,7 +15,7 @@ class CharacterController extends Controller
         ]);
         try {
             $client = new \GuzzleHttp\Client();
-            $response = $client->get('https://eu.api.battle.net/wow/character/'. request()->realm .'/' . request()->name . '?locale=en_GB&apikey=f8g9xhcpeebdcpma9a5u8fpnswqfwcaa');
+            $response = $client->get('https://eu.api.battle.net/wow/character/'. request()->realm .'/' . request()->name . '?locale=en_GB&apikey=' . env('WOW_API_KEY'));
             if ($response->getStatusCode() == 200) {
                 $character = Character::make(request()->all());
                 $character->user_id = auth()->user()->id;

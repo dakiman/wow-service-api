@@ -44,7 +44,7 @@ class CharacterTest extends TestCase
     public function testCharacterNameRequired()
     {
         $user = factory(User::class)->create();
-        $character = $this->getCharacter($name = '');
+        $character = $this->getCharacter('');
         $response = $this->actingAs($user, 'api')->json('POST', '/api/character', $character);
         $response
             ->assertStatus(422)

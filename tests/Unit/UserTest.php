@@ -57,6 +57,17 @@ class UserTest extends TestCase
             ->assertJsonFragment(["The email must be a valid email address."]);
     }
 
+    // public function testNameMaxLength()
+    // {
+    // 	$user = $this->getUser();
+    // 	$user['name'] = str_random(31);
+    // 	$response = $this->json('POST', '/api/register', $user);
+    //     $response
+    //         ->assertStatus(400)
+    //         ->assertJsonValidationErrors('name')
+    //         ->assertJsonFragment(["The name may not be greater than 30 characters."]);
+    // }
+
     public function testRegistrationPasswordRequired()
     {
         $this->validationRequired('password');
