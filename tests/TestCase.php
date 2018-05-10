@@ -24,5 +24,16 @@ abstract class TestCase extends BaseTestCase
             'email' => $this->faker->unique()->safeEmail,
             'password' => str_random(10),
         ];
-    }
+	}
+
+	// public function validationRequired($type, $route = '/api/register', $data = false)
+    // {
+    //     $data = $data ? $data : $this->getUser();
+    //     unset($data[$type]);
+    //     $response = $this->json('POST', $route, $data);
+    //     $response
+    //         ->assertStatus(400)
+    //         ->assertJsonValidationErrors($type)
+    //         ->assertJsonFragment(['The ' . $type . ' field is required.']);
+    // }
 }

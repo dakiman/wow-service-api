@@ -16,7 +16,8 @@ class MetaTest extends TestCase
     {
         $response = $this->get('/api/user');
         $response
-            ->assertStatus(401);
+            ->assertStatus(401)
+            ->assertJsonFragment(['error' => ['Unauthenticated.']]);
     }
 
     public function testRestrictedRouteAuthenticated()
@@ -25,23 +26,24 @@ class MetaTest extends TestCase
         $response = $this->actingAs($user, 'api')->get('/api/user');
         $response
             ->assertStatus(200);
-	}
+    }
 
-	public function testOAuthTokens() {
-		$password = str_random(10);
-		$user = factory(User::class)->create([
-			'password' => bcrypt($password)
-		]);
-		$response = $this->json('POST', '/api/login', ['email' => $user->email, 'password' => $password]);
-		$response
-			->assertStatus(200)
-			->assertJsonFragment(['token']);
-			
-		$data = $response->decodeResponseJson();
-		$secondResponse = $this
-			->withHeaders([ 'Authorization' => 'Bearer ' . $data['token'] ])
-			->json('GET', '/api/user');
-		$secondResponse
-			->assertStatus(200);
-	}
+    public function testOAuthTokens()
+    {
+        $password = str_random(10);
+        $user = factory(User::class)->create([
+            'password' => bcrypt($password)
+        ]);
+        $response = $this->json('POST', '/api/login', [ 'email' => $user->email, 'password' => $password]);
+        $response
+            ->assertStatus(200)
+            ->assertJsonFragment(['token']);
+
+        $data = $response->decodeResponseJson();
+        $secondResponse = $this
+            ->withHeaders([ 'Authorization' => 'Bearer ' . $data['token'] ])
+            ->json('GET', '/api/user');
+        $secondResponse
+            ->assertStatus(200);
+    }
 }
