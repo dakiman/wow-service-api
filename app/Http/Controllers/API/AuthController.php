@@ -13,22 +13,20 @@ class AuthController extends Controller
 {
     public function register(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        request()->validate([
             'email' => 'required|email|unique:users',
             'name' => 'required|string|max:30|min:2',
-            'password' => 'required|string|min:8'
+            'password' => 'required|string|min:8|max:32'
         ]);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->getMessageBag()], 400);
-        } else {
-            $user = User::create([
-                'name' => request('name'),
-                'email' => request('email'),
-                'password' => bcrypt(request('password'))
-            ]);
-            return response()->json(['user' => $user], 201);
-        }
+        $user = User::create([
+            'name' => request('name'),
+            'email' => request('email'),
+            'password' => bcrypt(request('password'))
+        ]);
+
+        return response()->json(['user' => $user], 201);
+
     }
 
     public function login()
@@ -37,9 +35,9 @@ class AuthController extends Controller
         if (!$result) {
             return response()->json([
                 'errors' => [
-					'auth' => [
-						'Wrong email or password.'
-					]
+                    'auth' => [
+                        'Wrong email or password.'
+                    ]
                 ],
             ], 422);
         }
@@ -55,27 +53,13 @@ class AuthController extends Controller
             'password' => request('password'),
         ];
 
-        /*
-            -------------------------------
-            CHECK CODE BLOCK FOR USEFULLNESS
-     */
-
-        // $accessToken = $user->token();
-
-        // if($accessToken != null) {
-        //     $refreshToken = DB::table('oauth_refresh_tokens')
-        //     ->where('access_token_id', $accessToken->id)
-        //     ->delete();
-        //     $accessToken->delete();
-        // }
-
-        /*
-            -------------------------------
-     */
-
         $request = Request::create('/oauth/token', 'POST', $data);
 
-        $response = app()->handle($request);
+        try {
+            $response = app()->handle($request);
+        } catch (\Exception $e){
+            return response()->json(['errors' => ['auth' => ['Problem with authentication client. Please inform developers']]],500);
+        }
 
         // Check if the request was successful
         if ($response->getStatusCode() != 200) {
@@ -95,17 +79,20 @@ class AuthController extends Controller
 
     public function logout()
     {
-        $accessToken = auth()->user()->token();
+        try {
+            $accessToken = auth()->user()->token();
 
-        $refreshToken = DB::table('oauth_refresh_tokens')
-            ->where('access_token_id', $accessToken->id)
-            ->update([
-                'revoked' => true
-            ]);
+            DB::table('oauth_refresh_tokens')
+                ->where('access_token_id', $accessToken->id)
+                ->update([
+                    'revoked' => true
+                ]);
 
-        $accessToken->revoke();
-
-        return response()->json(['status' => 200]);
+            $accessToken->revoke();
+        } catch (\Exception $e) {
+            return response()->json(["errors" => ["auth" => ["Request could not be processed. Please reauthenticate and attempt again."]]], 404);
+        }
+        return response()->json(["message" => "Logged out!"], 200);
     }
 
     public function getUser()

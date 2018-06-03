@@ -10,7 +10,7 @@ trait EasyValidate
         unset($data[$type]);
         $response = $this->json('POST', $route, $data);
         $response
-            ->assertStatus(400)
+            ->assertStatus(422)
             ->assertJsonValidationErrors($type)
             ->assertJsonFragment(['The ' . $type . ' field is required.']);
     }
@@ -21,7 +21,7 @@ trait EasyValidate
         $data[$type] = str_random($limit + 1);
         $response = $this->json('POST', $route, $data);
         $response
-            ->assertStatus(400)
+            ->assertStatus(422)
             ->assertJsonValidationErrors($type)
             ->assertJsonFragment(['The ' . $type . ' may not be greater than ' . $limit . ' characters.']);
     }
@@ -32,7 +32,7 @@ trait EasyValidate
         $data[$type] = str_random($limit - 1);
         $response = $this->json('POST', $route, $data);
         $response
-            ->assertStatus(400)
+            ->assertStatus(422)
             ->assertJsonValidationErrors($type)
             ->assertJsonFragment(['The ' . $type . ' must be at least ' . $limit . ' characters.']);
     }

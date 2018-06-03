@@ -26,14 +26,4 @@ abstract class TestCase extends BaseTestCase
         ];
 	}
 
-	// public function validationRequired($type, $route = '/api/register', $data = false)
-    // {
-    //     $data = $data ? $data : $this->getUser();
-    //     unset($data[$type]);
-    //     $response = $this->json('POST', $route, $data);
-    //     $response
-    //         ->assertStatus(400)
-    //         ->assertJsonValidationErrors($type)
-    //         ->assertJsonFragment(['The ' . $type . ' field is required.']);
-    // }
 }

@@ -52,7 +52,7 @@ class UserTest extends TestCase
         $user['email'] = str_random(10);
         $response = $this->json('POST', '/api/register', $user);
         $response
-            ->assertStatus(400)
+            ->assertStatus(422)
             ->assertJsonValidationErrors('email')
             ->assertJsonFragment(["The email must be a valid email address."]);
 	}
@@ -64,7 +64,7 @@ class UserTest extends TestCase
 		$user['email'] = $registeredUser->email;
 		$response = $this->json('POST', '/api/register', $user);
 		$response
-			->assertStatus(400)
+			->assertStatus(422)
 			->assertJsonValidationErrors('email')
 			->assertJsonFragment(['The email has already been taken.']);
 	}

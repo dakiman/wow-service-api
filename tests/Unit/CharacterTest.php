@@ -37,7 +37,7 @@ class CharacterTest extends TestCase
         $character = $this->getCharacter(str_random(10) . '123');
         $response = $this->actingAs($user, 'api')->json('POST', '/api/character', $character);
         $response
-            ->assertStatus(404)
+            ->assertStatus(422)
             ->assertJsonValidationErrors('character');
     }
 

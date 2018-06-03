@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Character extends Model
 {
 	protected $fillable = ['name', 'realm'];
-	protected $hidden = ['user_id', 'id'];
+	protected $hidden = ['user_id'];
 
 	public function user()
 	{
