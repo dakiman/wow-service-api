@@ -27,7 +27,7 @@ class CharacterTest extends TestCase
         $character = $this->getCharacter();
         $response = $this->actingAs($user, 'api')->json('POST', '/api/character', $character);
         $response
-            ->assertStatus(200)
+            ->assertStatus(201)
             ->assertJsonFragment($character);
     }
 

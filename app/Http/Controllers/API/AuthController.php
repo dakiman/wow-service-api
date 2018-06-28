@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\User;
 use DB;
 use Hash;
-use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
@@ -57,16 +56,13 @@ class AuthController extends Controller
 
         try {
             $response = app()->handle($request);
-        } catch (\Exception $e){
-            return response()->json(['errors' => ['auth' => ['Problem with authentication client. Please inform developers']]],500);
+        } catch (\Exception $e) {
+            return response()->json(['errors' => ['auth' => ['Problem with authentication client. Please inform developers']]], 500);
         }
 
         // Check if the request was successful
         if ($response->getStatusCode() != 200) {
-            return response()->json([
-                'message' => 'Request cannot be handled',
-                'status' => $response->getStatusCode()
-            ], 422);
+            return response()->json(['message' => 'Request cannot be handled'], 422);
         }
 
         $data = json_decode($response->getContent());

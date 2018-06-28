@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Character;
-use Illuminate\Support\Facades\Validator;
 
 class CharacterController extends Controller
 {
@@ -31,11 +29,11 @@ class CharacterController extends Controller
         try {
             $response = $this->client->get('character/' . request()->realm . '/' . request()->name);
             if ($response->getStatusCode() == 200) {
-                $character = Character::make(request()->all());
+                $character = Character::make(json_decode($response->getBody()->getContents(), true));
                 $character->user_id = auth()->user()->id;
                 $character->save();
             }
-            return response($character, $response->getStatusCode());
+            return response($character, 201);
         } catch (\Exception $e) {
             return response(['errors' => ['character' => ['Error processing character.']]], 422);
         }
@@ -47,7 +45,7 @@ class CharacterController extends Controller
         if (!$characters->isEmpty()) {
             return response()->json($characters, 200);
         } else {
-            return response(['errors' => ['character' => ['No characters found.']]], 401);
+            return response(['errors' => ['character' => ['No characters found.']]], 404);
         }
     }
 
@@ -62,7 +60,8 @@ class CharacterController extends Controller
                 return response(['errors' => ['character' => ['You do not own this character.']]], 403);
             }
         } catch (\Throwable $e) {
-            return response(['errors' => ['character' => ['Character not found.']]], 404);
+			return response(['errors' => ['character' => ['Character not found.']]], 404);
         }
     }
+
 }

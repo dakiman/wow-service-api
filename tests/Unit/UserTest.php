@@ -55,19 +55,19 @@ class UserTest extends TestCase
             ->assertStatus(422)
             ->assertJsonValidationErrors('email')
             ->assertJsonFragment(["The email must be a valid email address."]);
-	}
+    }
 
-	public function testRegistrationEmailMustBeUnique()
-	{
-		$user = $this->getUser();
-		$registeredUser = factory(User::class)->create();
-		$user['email'] = $registeredUser->email;
-		$response = $this->json('POST', '/api/register', $user);
-		$response
-			->assertStatus(422)
-			->assertJsonValidationErrors('email')
-			->assertJsonFragment(['The email has already been taken.']);
-	}
+    public function testRegistrationEmailMustBeUnique()
+    {
+        $user = $this->getUser();
+        $registeredUser = factory(User::class)->create();
+        $user['email'] = $registeredUser->email;
+        $response = $this->json('POST', '/api/register', $user);
+        $response
+            ->assertStatus(422)
+            ->assertJsonValidationErrors('email')
+            ->assertJsonFragment(['The email has already been taken.']);
+    }
 
     // public function testRegistrationEmailCantBeEmpty()
     // {
@@ -83,7 +83,7 @@ class UserTest extends TestCase
     public function testRegistrationPasswordRequired()
     {
         $this->validationRequired('password');
-	}
+    }
 
     public function testRegistrationNameRequired()
     {
@@ -108,6 +108,6 @@ class UserTest extends TestCase
     public function testPasswordMinLength()
     {
         $this->validationMinLength('password', 8);
-	}
+    }
 
 }

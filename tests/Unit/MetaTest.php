@@ -34,14 +34,14 @@ class MetaTest extends TestCase
         $user = factory(User::class)->create([
             'password' => bcrypt($password)
         ]);
-        $response = $this->json('POST', '/api/login', [ 'email' => $user->email, 'password' => $password]);
+        $response = $this->json('POST', '/api/login', ['email' => $user->email, 'password' => $password]);
         $response
             ->assertStatus(200)
             ->assertJsonFragment(['token']);
 
         $data = $response->decodeResponseJson();
         $secondResponse = $this
-            ->withHeaders([ 'Authorization' => 'Bearer ' . $data['token'] ])
+            ->withHeaders(['Authorization' => 'Bearer ' . $data['token']])
             ->json('GET', '/api/user');
         $secondResponse
             ->assertStatus(200);
