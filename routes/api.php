@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 Route::post('/register', 'API\AuthController@register');
 Route::post('/login', 'API\AuthController@login');
+Route::get('/realms', 'RealmController@get');
 
 Route::middleware('auth:api')->group(function () {
     Route::post('/logout', 'API\AuthController@logout');
