@@ -24,7 +24,7 @@ class RealmController extends Controller
 			$realm[0]['currentTime'] = $date;
 			return response(['realm' => $realm], 200);
 		} catch (\Exception $e) {
-			return response(['errors' => ['lookup' => [$e->getMessage()]]], 404);
+			return response(['errors' => ['lookup' => ['Realm not found.']]], 404);
 		}
 	}
 
