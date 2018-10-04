@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Services\RealmService;
 use App\Realm;
 use Carbon\Carbon;
-use App\Providers\RealmService;
+
 
 
 class RealmController extends Controller
 {
+
 	public function get()
 	{
 		$realms = Realm::all('id', 'name', 'status', 'slug', 'queue', 'battlegroup');
@@ -28,17 +29,13 @@ class RealmController extends Controller
 		}
 	}
 
-	public function requestUpdate()
+	public function requestUpdate(RealmService $realmService)
 	{
-		$realm = Realm::find(1);
-		$currentTime = Carbon::now();
-		$timeElapsedSinceUpdated = $currentTime->diffInMinutes($realm->updated_at);
-		if ($timeElapsedSinceUpdated >= 5) {
-			RealmService::updateRealmData();
-			$allRealms = Realm::all('name', 'status', 'slug', 'queue', 'battlegroup');
-			return response(['success' => ['realms' => ['Realm status updated.']], 'realms' => $allRealms	], 200);
-		} else {
-			return response(['errors' => ['realms' => ['Realm status not updated. Please wait another ' . (5 - $timeElapsedSinceUpdated) . ' minutes.']]], 400);
-		}
+	    $updateTime = $realmService->updateRealmData();
+	    if($updateTime === true) {
+            $allRealms = Realm::all('name', 'status', 'slug', 'queue', 'battlegroup');
+            return response(['success' => ['realms' => ['Realm status updated.']], 'realms' => $allRealms	], 200);
+        }
+        return response(['errors' => ['realms' => ['Realm status not updated. Please wait another ' . (5 - $updateTime) . ' minutes.']]], 400);
 	}
 }
