@@ -14,6 +14,7 @@ use Exception;
 class CustomException extends Exception
 {
     protected $data = [];
+    protected $statusCode = 500;
 
     public function withCode($code)
     {
@@ -34,6 +35,6 @@ class CustomException extends Exception
 
     public function render()
     {
-        return response(['errors' => $this->getMessage(), 'data' => $this->data], $this->getCode());
+        return response()->api($this->data, $this->statusCode, [['code' => $this->getCode(), 'message' => $this->message]]);
     }
 }

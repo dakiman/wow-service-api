@@ -23,7 +23,7 @@ class RealmService
             }
             return true;
         } else {
-            throw new RealmCantUpdateException("Please try again in " . $timeSinceUpdated . " minutes.");
+            throw (new RealmCantUpdateException("Please try again in " . $timeSinceUpdated . " minutes."));
         }
     }
 
@@ -32,7 +32,7 @@ class RealmService
             $realm = Realm::where('slug', $slug)->get();
             $date = Carbon::now();
             $realm[0]['currentTime'] = $date;
-            return ['realm' => $realm];
+            return $realm;
         } catch (\Exception $e) {
             throw (new RealmNameNotFound("Realm not found."));
         }
