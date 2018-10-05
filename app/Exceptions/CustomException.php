@@ -27,6 +27,11 @@ class CustomException extends Exception
         return $this;
     }
 
+    public function withMessage($message) {
+        $this->message = $message;
+        return $this;
+    }
+
     public function render()
     {
         return response(['errors' => $this->getMessage(), 'data' => $this->data], $this->getCode());
