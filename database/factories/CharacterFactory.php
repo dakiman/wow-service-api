@@ -14,6 +14,7 @@ $factory->define(App\Character::class, function (Faker $faker) {
 		'race' => random_int(1, 22),
 		'level' => random_int(0, 110),
 		'totalHonorableKills' => random_int(0, 100000),
-		'achievementPoints' => random_int(0, 15000)
+		'achievementPoints' => random_int(0, 15000),
+		'user_id' => 1
     ];
 });

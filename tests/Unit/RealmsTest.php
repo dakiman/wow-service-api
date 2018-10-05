@@ -24,7 +24,6 @@ class RealmsTest extends TestCase
 	public function testSingleRealmCanBeRetrieved()
 	{
 		$realmFromDb = Realm::all()->random(1)->first();
-//		dd($realmFromDb);
 		$response = $this->get('/api/realms/' . $realmFromDb->slug);
 		$response
 			->assertStatus(200)
@@ -34,8 +33,9 @@ class RealmsTest extends TestCase
 	public function testCanUpdateIfTimeElapsed()
 	{
 		$realm = Realm::find(1);
-		$timestamp = Carbon::now()->subMinutes(5);
+		$timestamp = Carbon::now()->subMinutes(6);
 		$realm->updated_at = $timestamp;
+		$realm->save();
 		$response = $this->patch('/api/realms');
 		$response
 			->assertStatus(200)

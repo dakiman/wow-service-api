@@ -18,12 +18,13 @@ class RealmController extends Controller
         $realms = $this->realmService->getAllRealmsData();
         return response(['realms' => $realms], 200);
     }
-
+    
     public function getSingle($slug)
     {
         $realm = $this->realmService->getRelevantSingleRealmData($slug);
         return response(['realm' => $realm], 200);
     }
+
 
     public function requestUpdate()
     {
