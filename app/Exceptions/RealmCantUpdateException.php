@@ -2,12 +2,10 @@
 
 namespace App\Exceptions;
 
-use Exception;
-
-class RealmCantUpdateException extends Exception
+class RealmCantUpdateException extends CustomException
 {
-    public function render()
-    {
-        return response(['error' => $this->getMessage()], 400);
-    }
+    protected $message = "Realms cannot be updated.";
+    protected $code = 400;
+    protected $data = [];
+
 }

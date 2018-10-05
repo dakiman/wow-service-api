@@ -3,29 +3,32 @@
 namespace App\Http\Controllers;
 
 use App\Services\RealmService;
-use App\Realm;
-use Carbon\Carbon;
-
 
 class RealmController extends Controller
 {
+    protected $realmService;
+
+    public function __construct(RealmService $realmService)
+    {
+        $this->realmService = $realmService;
+    }
 
     public function get()
     {
-        $realms = Realm::all('id', 'name', 'status', 'slug', 'queue', 'battlegroup');
+        $realms = $this->realmService->getAllRealmsData();
         return response(['realms' => $realms], 200);
     }
 
-    public function getSingle($slug, RealmService $realmService)
+    public function getSingle($slug)
     {
-        $realm = $realmService->getRelevantSingleRealmData($slug);
+        $realm = $this->realmService->getRelevantSingleRealmData($slug);
         return response(['realm' => $realm], 200);
     }
 
-    public function requestUpdate(RealmService $realmService)
+    public function requestUpdate()
     {
-        $realmService->updateRealmData();
-        $allRealms = Realm::all('name', 'status', 'slug', 'queue', 'battlegroup');
-        return response(['realms' => $allRealms], 200);
+        $this->realmService->updateRealmData();
+        $realms = $this->realmService->getAllRealmsData();
+        return response(['realms' => $realms], 200);
     }
 }
