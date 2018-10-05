@@ -2,7 +2,6 @@
 
 namespace Tests\Unit;
 
-use App\Providers\RealmService;
 use App\Realm;
 use Carbon\Carbon;
 use PHPUnit\Framework\Assert;
@@ -11,7 +10,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class RealmsTest extends TestCase
 {
-    use DatabaseTransactions;
+//    use DatabaseTransactions;
 
     public function testRealmsCanBeRetrieved() {
 		$realmsFromDb = Realm::all('id', 'name', 'status', 'slug', 'queue', 'battlegroup');

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use GuzzleHttp\Client;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Support\ServiceProvider;
 
@@ -30,6 +31,14 @@ class RequestServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->singleton(Client::class, function() {
+           return new Client([
+               'base_uri' => 'https://eu.api.battle.net/wow/',
+               'query' => [
+                   'locale' => 'en_GB',
+                   'apikey' => env('WOW_API_KEY')
+               ]
+           ]);
+        });
     }
 }
