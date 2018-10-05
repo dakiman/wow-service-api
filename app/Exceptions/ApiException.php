@@ -11,7 +11,7 @@ namespace App\Exceptions;
 
 use Exception;
 
-class CustomException extends Exception
+class ApiException extends Exception
 {
     protected $data = [];
     protected $statusCode = 500;

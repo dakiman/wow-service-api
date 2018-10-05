@@ -23,7 +23,7 @@ class RealmService
             }
             return true;
         } else {
-            throw (new RealmCantUpdateException("Please try again in " . $timeSinceUpdated . " minutes."));
+            throw new RealmCantUpdateException("Please try again in " . $timeSinceUpdated . " minutes.");
         }
     }
 
@@ -34,7 +34,7 @@ class RealmService
             $realm[0]['currentTime'] = $date;
             return $realm;
         } catch (\Exception $e) {
-            throw (new RealmNameNotFound("Realm not found."));
+            throw new RealmNameNotFound("Realm not found.");
         }
     }
 

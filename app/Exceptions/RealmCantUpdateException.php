@@ -2,7 +2,7 @@
 
 namespace App\Exceptions;
 
-class RealmCantUpdateException extends CustomException
+class RealmCantUpdateException extends ApiException
 {
     protected $message = ['realms' => 'Realms cannot be updated.'];
     protected $code = 'REALM_UPDATE_FAILED';

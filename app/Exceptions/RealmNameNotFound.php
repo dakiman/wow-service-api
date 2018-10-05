@@ -2,7 +2,7 @@
 
 namespace App\Exceptions;
 
-class RealmNameNotFound extends CustomException
+class RealmNameNotFound extends ApiException
 {
     protected $message = ['realm' => 'Realm not found'];
     protected $code = 'REALM_NOT_FOUND';
