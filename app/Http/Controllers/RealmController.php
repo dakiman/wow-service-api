@@ -16,7 +16,7 @@ class RealmController extends Controller
     public function get()
     {
         $realms = $this->realmService->getAllRealmsData();
-        return response(['realms' => $realms], 200);
+        return response()->api(['realms' => $realms], 200);
     }
 
     public function getSingle($slug)
@@ -29,6 +29,6 @@ class RealmController extends Controller
     {
         $this->realmService->updateRealmData();
         $realms = $this->realmService->getAllRealmsData();
-        return response()->api(['realms' => $realms], 200);
+        return response()->api(['info' => 'Realm status updated.', 'realms' => $realms], 200);
     }
 }

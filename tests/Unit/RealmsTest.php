@@ -18,7 +18,7 @@ class RealmsTest extends TestCase
     	$response = $this->get('/api/realms');
     	$response
 			->assertStatus(200)
-			->assertJson(['realms' => $realmsFromDb->toArray()]);
+			->assertJson(['data' => ['realms' => $realmsFromDb->toArray()]]);
 	}
 
 	public function testSingleRealmCanBeRetrieved()
@@ -41,7 +41,7 @@ class RealmsTest extends TestCase
 			->assertStatus(200)
 			->assertJsonFragment(['Realm status updated.']);
 		$realmAfterUpdate = Realm::find(1);
-		Assert::assertTrue($realmAfterUpdate->updated_at->diffInMinutes(Carbon::now()) <= 0);
+		Assert::assertTrue($realmAfterUpdate->updated_at->diffInMinutes(Carbon::now()) <= 1);
 	}
 
 	public function testCantUpdateIfTimeHasntElapsed()
@@ -54,7 +54,7 @@ class RealmsTest extends TestCase
 		$timeElapsedSinceUpdated = Carbon::now()->diffInMinutes($realmAfterUpdate->updated_at);
 		$response
 			->assertStatus(400)
-			->assertJsonFragment(['Realm status not updated. Please wait another ' . (5 - $timeElapsedSinceUpdated) . ' minutes.']);
+			->assertJsonFragment(["Please try again in " . (5 - $timeElapsedSinceUpdated) . " minutes."]);
 	}
 }
 

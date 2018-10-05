@@ -23,7 +23,7 @@ class RealmService
             }
             return true;
         } else {
-            throw new RealmCantUpdateException("Please try again in " . $timeSinceUpdated . " minutes.");
+            throw new RealmCantUpdateException("Please try again in " . (5 - $timeSinceUpdated) . " minutes.");
         }
     }
 
@@ -39,7 +39,7 @@ class RealmService
     }
 
     public function getAllRealmsData() {
-        return Realm::all('name', 'status', 'slug', 'queue', 'battlegroup');
+        return Realm::all('id', 'name', 'status', 'slug', 'queue', 'battlegroup');
     }
 
     private function getTimeSinceUpdate() {
