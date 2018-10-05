@@ -82,7 +82,6 @@ class AuthController extends Controller
 				->update([
 					'revoked' => true
 				]);
-
 			$accessToken->revoke();
 		} catch (\Exception $e) {
 			return response()->json(["errors" => ["auth" => ["Request could not be processed. Please reauthenticate and attempt again."]]], 404);
