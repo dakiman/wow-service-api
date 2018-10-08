@@ -37,7 +37,7 @@ class MetaTest extends TestCase
         $response = $this->json('POST', '/api/login', ['email' => $user->email, 'password' => $password]);
         $response
             ->assertStatus(200)
-            ->assertJsonFragment('token');
+            ->assertJsonFragment(['token']);
 
         $data = $response->decodeResponseJson();
         $secondResponse = $this

@@ -8,8 +8,6 @@ use Illuminate\Support\ServiceProvider;
 
 class BlizzardServiceProvider extends ServiceProvider
 {
-    protected $defer = true;
-
     /**
      * Bootstrap services.
      *

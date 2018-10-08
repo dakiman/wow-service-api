@@ -6,15 +6,23 @@ use App\Exceptions\RealmCantUpdateException;
 use App\Exceptions\RealmNameNotFound;
 use App\Realm;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class RealmService
 {
+    protected $blizzardService;
+
+    public function __construct(BlizzardService $blizzardService)
+    {
+        $this->blizzardService = $blizzardService;
+    }
+
     public function updateRealmData() {
         $timeSinceUpdated = $this->getTimeSinceUpdate();
         if($timeSinceUpdated > 5) {
-            $resultLink =
-                json_decode(file_get_contents('https://eu.api.battle.net/wow/realm/status?locale=en_GB&apikey=geqhpfsqj3thw24vtfg6x43hkdp275je'), true);
-            foreach($resultLink['realms'] as $realm) {
+            $response = $this->blizzardService->getRealmsData();
+            $realmsData = json_decode($response->getBody()->getContents(), true);
+            foreach($realmsData['realms'] as $realm) {
                 $currentRealm = Realm::where('name', $realm['name'])->first();
                 $currentRealm->population = $realm['population'];
                 $currentRealm->queue = $realm['queue'];
@@ -33,7 +41,7 @@ class RealmService
             $date = Carbon::now();
             $realm[0]['currentTime'] = $date;
             return $realm;
-        } catch (\Exception $e) {
+        } catch (ModelNotFoundException $e) {
             throw new RealmNameNotFound("Realm not found.");
         }
     }

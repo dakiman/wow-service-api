@@ -3,8 +3,6 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use App\User;
 use App\Character;
@@ -37,8 +35,7 @@ class CharacterTest extends TestCase
         $character = $this->getCharacter(str_random(10) . '123');
         $response = $this->actingAs($user, 'api')->json('POST', '/api/character', $character);
         $response
-            ->assertStatus(422)
-            ->assertJsonValidationErrors('character');
+            ->assertStatus(404);
     }
 
     public function testCharacterNameRequired()
@@ -93,8 +90,7 @@ class CharacterTest extends TestCase
         ]);
         $response = $this->actingAs($user, 'api')->json('DELETE', '/api/character/' . $character->id);
         $response
-            ->assertStatus(403)
-            ->assertJsonValidationErrors('character');
+            ->assertStatus(403);
     }
 
     public function testUserCantDeleteNonExistentCharacters()
@@ -106,7 +102,6 @@ class CharacterTest extends TestCase
         $character->delete();
         $response = $this->actingAs($user, 'api')->json('DELETE', '/api/character/' . $character->id);
         $response
-            ->assertStatus(404)
-            ->assertJsonValidationErrors('character');
+            ->assertStatus(404);
     }
 }

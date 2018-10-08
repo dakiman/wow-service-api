@@ -6,7 +6,7 @@ use GuzzleHttp\Client;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Support\ServiceProvider;
 
-class RequestServiceProvider extends ServiceProvider
+class RestServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap services.

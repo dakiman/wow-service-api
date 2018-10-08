@@ -3,20 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Character;
-use App\Services\BlizzardService;
+use App\Services\CharacterService;
 
 class CharacterController extends Controller
 {
-    private $blizzardService;
+    private $characterService;
 
-    public function __construct(BlizzardService $blizzardService)
+    public function __construct(CharacterService $characterService)
     {
-        $this->blizzardService = $blizzardService;
+        $this->characterService = $characterService;
     }
 
     public function store()
     {
-        $character = $this->blizzardService->getAndSaveCharacter(
+        $this->validate(request(), [
+            'name' => 'required|string',
+            'realm' => 'required|string'
+        ]);
+        $character = $this->characterService->getAndSaveCharacter(
             request()->name,
             request()->realm
         );
@@ -25,13 +29,13 @@ class CharacterController extends Controller
 
     public function get()
     {
-        $characters = $this->blizzardService->getAllCharactersForUser();
+        $characters = $this->characterService->getAllCharactersForUser();
         return response()->api(['characters' => $characters], 200);
     }
 
     public function delete($id)
     {
-        $this->blizzardService->deleteCharacterById($id);
+        $this->characterService->deleteCharacterById($id);
         return response()->api(['message' => 'Character was sucessfully deleted.'], 200);
     }
 
