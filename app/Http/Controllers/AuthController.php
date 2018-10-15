@@ -8,22 +8,19 @@ use DB;
 
 class AuthController extends Controller
 {
-	public function register(Request $request)
+	public function register()
 	{
 		request()->validate([
 			'email' => 'required|email|unique:users',
 			'name' => 'required|string|max:30|min:2',
 			'password' => 'required|string|min:8|max:32'
 		]);
-
-		$user = User::create([
-			'name' => request('name'),
-			'email' => request('email'),
-			'password' => bcrypt(request('password'))
-		]);
-
-		return response()->json(['user' => $user], 201);
-
+        $user = User::create(request()->all(), [
+            'name' => request('name'),
+            'email' => request('email'),
+            'password' => bcrypt(request('password'))
+        ]);
+		return response()->api(['user' => $user], 201);
 	}
 
 	public function login()
