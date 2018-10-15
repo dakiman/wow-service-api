@@ -4,9 +4,8 @@ namespace App\Exceptions;
 
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Request;
 use Illuminate\Auth\AuthenticationException;
-use Response;
+use Illuminate\Validation\ValidationException;
 
 class Handler extends ExceptionHandler
 {
@@ -21,9 +20,7 @@ class Handler extends ExceptionHandler
 
     protected function unauthenticated($request, AuthenticationException $exception)
     {
-        return response()->json(['error' => [ 'Unauthenticated.' ] ], 401);
-
-        // return redirect()->guest(route('login'));
+        return response()->api(null, 401, [['code' => 'USER_NOT_AUTHENTICATED', 'message' => $exception->getMessage()]]);
     }
 
     /**
@@ -39,7 +36,7 @@ class Handler extends ExceptionHandler
     /**
      * Report or log an exception.
      *
-     * @param  \Exception  $exception
+     * @param  \Exception $exception
      * @return void
      */
     public function report(Exception $exception)
@@ -50,12 +47,30 @@ class Handler extends ExceptionHandler
     /**
      * Render an exception into an HTTP response.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Exception  $exception
+     * @param  \Illuminate\Http\Request $request
+     * @param  \Exception $exception
      * @return \Illuminate\Http\Response
      */
     public function render($request, Exception $exception)
     {
+        if ($exception instanceof ApiException) {
+            return response()->api($exception->getData(), $exception->getStatusCode(), [['code' => $exception->getCode(), 'message' => $exception->getMessage()]]);
+        } else if ($exception instanceof ValidationException) {
+            return response()->api(null, $exception->status, $this->parseErrorsFromException($exception));
+        }
+
         return parent::render($request, $exception);
+    }
+
+    private function parseErrorsFromException(ValidationException $exception)
+    {
+        $parsedErrors = [];
+        foreach ($exception->errors() as $key => $error) {
+            array_push($parsedErrors, [
+                'code' => 'VALIDATION_ERROR',
+                'message' => $error[0]
+            ]);
+        }
+        return $parsedErrors;
     }
 }

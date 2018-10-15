@@ -2,7 +2,6 @@
 
 namespace App\Exceptions;
 
-use Exception;
 
 class CharacterNotOwnedException extends ApiException
 {

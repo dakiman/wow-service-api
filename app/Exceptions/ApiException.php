@@ -33,6 +33,16 @@ class ApiException extends Exception
         return $this;
     }
 
+    public function getData() {
+        return $this->data;
+    }
+
+    public function getStatusCode() {
+        return $this->statusCode;
+    }
+
+
+
     public function render()
     {
         return response()->api($this->data, $this->statusCode, [['code' => $this->getCode(), 'message' => $this->message]]);
